@@ -1,8 +1,8 @@
 # ============================================================
 # smooth_sleep — add_time (macro)
-# Avance le temps de $(step) ticks.
-# Passe par une macro pour que le pas soit calcule au tick courant
-# et n'enjambe jamais l'aube (daytime 0), sinon les datapacks qui
-# comptent les jours ratent leur declencheur.
+# Advances time by $(step) ticks.
+# Uses a macro so the step is computed on the current tick and never
+# overshoots dawn (daytime 0), otherwise datapacks that count days
+# miss their trigger.
 # ============================================================
 $time add $(step)
