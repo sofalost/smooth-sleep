@@ -71,10 +71,14 @@ execute as @a if score @s napping matches 1 run scoreboard players set @s restin
 execute if entity @a[scores={sleep_timer=100..}] if score #daytime timer matches 0..12540 run weather clear
 
 # ------------------------------------------------------------
-# 6. Transition notifications (actionbar)
-#    Tags for grouping: one title per type = no overwrite.
-#    Without this, two players going to bed on the same tick would
-#    trigger two `title` calls and the second would overwrite the first.
+# 6. Transition notifications (chat, not actionbar)
+#    Tags for grouping: one message per type lists every matching
+#    player at once via the selector's separator.
+#    Chat is used instead of `title actionbar` because the actionbar
+#    is a single overwritable slot: if two different event types (e.g.
+#    a nap starting and a wake happening) fire on the same tick, the
+#    second `title` call would silently erase the first one's names.
+#    Chat messages stack instead of overwriting each other.
 # ------------------------------------------------------------
 tag @a remove ss_nap
 tag @a remove ss_sleep
@@ -84,9 +88,9 @@ execute as @a if score @s napping matches 1 if score @s rest_prev matches 0 run 
 execute as @a if score @s sleep_timer matches 1.. if score #daytime timer matches 12541.. if score @s rest_prev matches 0 run tag @s add ss_sleep
 execute as @a if score @s resting matches 0 if score @s rest_prev matches 1 run tag @s add ss_wake
 
-execute if entity @a[tag=ss_nap] run title @a actionbar [{"selector":"@a[tag=ss_nap]","separator":{"text":", ","color":"white"}},{"text":" napping...","color":"gold"}]
-execute if entity @a[tag=ss_sleep] run title @a actionbar [{"selector":"@a[tag=ss_sleep]","separator":{"text":", ","color":"white"}},{"text":" sleeping...","color":"aqua"}]
-execute if entity @a[tag=ss_wake] run title @a actionbar [{"selector":"@a[tag=ss_wake]","separator":{"text":", ","color":"white"}},{"text":" woke up","color":"yellow"}]
+execute if entity @a[tag=ss_nap] run tellraw @a [{"selector":"@a[tag=ss_nap]","separator":{"text":", ","color":"white"}},{"text":" napping...","color":"gold"}]
+execute if entity @a[tag=ss_sleep] run tellraw @a [{"selector":"@a[tag=ss_sleep]","separator":{"text":", ","color":"white"}},{"text":" sleeping...","color":"aqua"}]
+execute if entity @a[tag=ss_wake] run tellraw @a [{"selector":"@a[tag=ss_wake]","separator":{"text":", ","color":"white"}},{"text":" woke up","color":"yellow"}]
 
 # 7. Remember the state for the next tick
 execute as @a run scoreboard players operation @s rest_prev = @s resting
